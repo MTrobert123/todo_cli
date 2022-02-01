@@ -25,6 +25,11 @@ mod tests {
     fn test_get_tasks() {
         assert!(get_all_tasks().is_ok())
     }
+
+    #[test]
+    fn test_delete_task() {
+        assert!(delete_task(&1).is_ok())
+    }
 }
 
 fn parse_date(date: &String) -> Result<(), String> {
@@ -111,5 +116,15 @@ pub fn get_all_tasks() -> Result<(), Box<dyn Error>> {
             warn
         );
     }
+    Ok(())
+}
+
+pub fn delete_task(id: &i32) -> Result<(), Box<dyn Error>> {
+    let conn = database::get_db();
+    conn.execute(
+        "DELETE FROM tasks WHERE id in (SELECT id FROM tasks LIMIT 1 OFFSET ?1)",
+        params![id - 1],
+    )?;
+    println!("Task deleted successfully.");
     Ok(())
 }

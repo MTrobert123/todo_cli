@@ -17,6 +17,9 @@ enum Commands {
         date: Option<String>,
     },
     Ls,
+    Del {
+        id: Option<i32>,
+    },
 }
 
 pub fn parse_args() {
@@ -42,5 +45,17 @@ pub fn parse_args() {
                 exit(1);
             });
         }
+        Commands::Del { id } => match id {
+            Some(value) => {
+                tasks::delete_task(value).unwrap_or_else(|err| {
+                    eprintln!("There was an error deleting task: {}", err);
+                    exit(1);
+                });
+            }
+            None => {
+                eprintln!("error: please enter the task id.");
+                exit(1);
+            }
+        },
     }
 }

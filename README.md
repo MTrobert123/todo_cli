@@ -26,10 +26,9 @@ Following commands are available:
 
 - [x] add
 - [x] ls
-- [ ] remove
+- [x] del
 - [ ] check
 - [ ] uncheck
-- [ ] delete
 - [ ] rename
 - [ ] report
 
