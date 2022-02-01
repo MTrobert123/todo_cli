@@ -37,6 +37,11 @@ mod tests {
     }
 
     #[test]
+    fn test_rename_task() {
+        assert!(rename_task(1, "New task (renamed)".to_string()).is_ok())
+    }
+
+    #[test]
     fn test_delete_task() {
         assert!(delete_task(&1).is_ok())
     }
@@ -147,5 +152,15 @@ pub fn check_task(id: i32, status: bool) -> Result<(), Box<dyn Error>> {
         params![bool_value, id - 1],
     )?;
     println!("Done.");
+    Ok(())
+}
+
+pub fn rename_task(id: i32, name: String) -> Result<(), Box<dyn Error>> {
+    let conn = database::get_db();
+    conn.execute(
+        "UPDATE tasks SET task_name = ?1 WHERE id in (SELECT id FROM tasks LIMIT 1 OFFSET ?2)",
+        params![name, id - 1],
+    )?;
+    println!("Task with id: {} renamed to: {}", id, name);
     Ok(())
 }

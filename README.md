@@ -29,7 +29,7 @@ Following commands are available:
 - [x] del
 - [x] check
 - [x] uncheck
-- [ ] rename
+- [x] rename
 - [ ] report
 
 ## License

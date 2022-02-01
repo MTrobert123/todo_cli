@@ -26,6 +26,10 @@ enum Commands {
     Uncheck {
         id: Option<i32>,
     },
+    Rename {
+        id: Option<i32>,
+        name: Option<String>,
+    },
 }
 
 fn check_id(id: &Option<i32>) -> i32 {
@@ -79,11 +83,25 @@ pub fn parse_args() {
                 eprintln!("There was an error checking task: {}", err);
             });
         }
-        &Commands::Uncheck { id } => {
+        Commands::Uncheck { id } => {
             let id = check_id(&id);
             tasks::check_task(id, false).unwrap_or_else(|err| {
                 eprintln!("There was an error unchecking task: {}", err);
             });
+        }
+        Commands::Rename { id, name } => {
+            let id = check_id(&id);
+            match name.as_deref() {
+                Some(value) => {
+                    tasks::rename_task(id, value.to_string()).unwrap_or_else(|err| {
+                        eprintln!("There was an error renaming task: {}", err);
+                    });
+                }
+                None => {
+                    eprintln!("error: no name provided.");
+                    exit(1)
+                }
+            }
         }
     }
 }
