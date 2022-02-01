@@ -27,7 +27,7 @@ Following commands are available:
 - [x] add
 - [x] ls
 - [x] del
-- [ ] check
+- [x] check
 - [ ] uncheck
 - [ ] rename
 - [ ] report
