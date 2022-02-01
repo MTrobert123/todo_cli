@@ -20,6 +20,19 @@ enum Commands {
     Del {
         id: Option<i32>,
     },
+    Check {
+        id: Option<i32>,
+    },
+}
+
+fn check_id(id: &Option<i32>) -> i32 {
+    match id {
+        Some(value) => *value,
+        None => {
+            eprintln!("error: please enter the task id.");
+            exit(1);
+        }
+    }
 }
 
 pub fn parse_args() {
@@ -57,5 +70,11 @@ pub fn parse_args() {
                 exit(1);
             }
         },
+        Commands::Check { id } => {
+            let id = check_id(&id);
+            tasks::check_task(id).unwrap_or_else(|err| {
+                println!("There was an error checking task: {}", err);
+            });
+        }
     }
 }
