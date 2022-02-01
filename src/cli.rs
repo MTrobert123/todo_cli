@@ -23,6 +23,9 @@ enum Commands {
     Check {
         id: Option<i32>,
     },
+    Uncheck {
+        id: Option<i32>,
+    },
 }
 
 fn check_id(id: &Option<i32>) -> i32 {
@@ -72,8 +75,14 @@ pub fn parse_args() {
         },
         Commands::Check { id } => {
             let id = check_id(&id);
-            tasks::check_task(id).unwrap_or_else(|err| {
-                println!("There was an error checking task: {}", err);
+            tasks::check_task(id, true).unwrap_or_else(|err| {
+                eprintln!("There was an error checking task: {}", err);
+            });
+        }
+        &Commands::Uncheck { id } => {
+            let id = check_id(&id);
+            tasks::check_task(id, false).unwrap_or_else(|err| {
+                eprintln!("There was an error unchecking task: {}", err);
             });
         }
     }

@@ -28,7 +28,12 @@ mod tests {
 
     #[test]
     fn test_check_task() {
-        assert!(check_task(1).is_ok())
+        assert!(check_task(1, true).is_ok())
+    }
+
+    #[test]
+    fn test_uncheck_task() {
+        assert!(check_task(1, false).is_ok())
     }
 
     #[test]
@@ -134,11 +139,12 @@ pub fn delete_task(id: &i32) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-pub fn check_task(id: i32) -> Result<(), Box<dyn Error>> {
+pub fn check_task(id: i32, status: bool) -> Result<(), Box<dyn Error>> {
+    let bool_value = if status == false { 0 } else { 1 };
     let conn = database::get_db();
     conn.execute(
         "UPDATE tasks SET task_done = ?1 WHERE id in (SELECT id FROM tasks LIMIT 1 OFFSET ?2)",
-        params![1, id - 1],
+        params![bool_value, id - 1],
     )?;
     println!("Done.");
     Ok(())

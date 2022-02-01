@@ -28,7 +28,7 @@ Following commands are available:
 - [x] ls
 - [x] del
 - [x] check
-- [ ] uncheck
+- [x] uncheck
 - [ ] rename
 - [ ] report
 
