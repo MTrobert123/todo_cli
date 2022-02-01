@@ -24,7 +24,7 @@ Result binary is located at `target/release` directory.
 
 Following commands are available:
 
-- [ ] add
+- [x] add
 - [ ] ls
 - [ ] remove
 - [ ] check
