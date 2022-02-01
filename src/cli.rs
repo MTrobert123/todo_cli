@@ -36,6 +36,11 @@ pub fn parse_args() {
                 Err(err) => eprintln!("There was an error creating new task: {}", err),
             }
         }
-        Commands::Ls => {}
+        Commands::Ls => {
+            tasks::get_all_tasks().unwrap_or_else(|err| {
+                eprintln!("There was a problem getting tasks: {}", err);
+                exit(1);
+            });
+        }
     }
 }

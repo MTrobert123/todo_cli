@@ -1,5 +1,5 @@
 use crate::database;
-use chrono::NaiveDateTime;
+use chrono::{offset::Local, DateTime, NaiveDateTime};
 use rusqlite::params;
 use std::error::Error;
 
@@ -20,12 +20,36 @@ mod tests {
     fn test_new_task_fail() {
         assert!(new_task("New Task".to_string(), "invalid date".to_string()).is_ok())
     }
+
+    #[test]
+    fn test_get_tasks() {
+        assert!(get_all_tasks().is_ok())
+    }
 }
 
 fn parse_date(date: &String) -> Result<(), String> {
     match NaiveDateTime::parse_from_str(&date, "%Y-%m-%d %H:%M:%S") {
         Ok(_) => Ok(()),
         Err(_) => return Err("not a valid datetime.".to_string()),
+    }
+}
+
+fn is_late(date: &String) -> bool {
+    if date != "" {
+        let current_date = Local::now().to_rfc2822();
+        let len = current_date.len();
+        let task_date = DateTime::parse_from_str(
+            &format!("{} {}", date, &current_date[len - 5..]),
+            "%Y-%m-%d %H:%M:%S %z",
+        )
+        .unwrap();
+        if Local::now() >= task_date {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
     }
 }
 
@@ -56,4 +80,36 @@ pub fn new_task(name: String, date: String) -> Result<String, Box<dyn Error>> {
         params![task.name, task.date, task.done],
     )?;
     Ok(task.name)
+}
+
+pub fn get_all_tasks() -> Result<(), Box<dyn Error>> {
+    let conn = database::get_db();
+    let mut stmt = conn.prepare("SELECT task_name,task_date, task_done FROM tasks;")?;
+    let tasks = stmt.query_map([], |row| {
+        Ok(Task {
+            name: row.get(0)?,
+            date: row.get(1)?,
+            done: row.get(2)?,
+        })
+    })?;
+
+    for (index, task_item) in tasks.enumerate() {
+        let task = task_item.unwrap();
+        let warn = if is_late(&task.date) == true {
+            "⚠"
+        } else {
+            ""
+        };
+        let sign = if task.done == true { "✓" } else { "⨯" };
+
+        println!(
+            "[{}] {}. {} ({}) {}",
+            sign,
+            index + 1,
+            task.name,
+            task.date,
+            warn
+        );
+    }
+    Ok(())
 }
