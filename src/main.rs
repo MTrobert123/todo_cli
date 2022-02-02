@@ -1,4 +1,5 @@
 mod cli;
+mod config;
 mod database;
 mod tasks;
 fn main() {

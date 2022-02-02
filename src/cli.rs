@@ -20,7 +20,11 @@ enum Commands {
         date: Option<String>,
     },
     /// List all available tasks
-    Ls,
+    Ls {
+        /// Disabling emojis for older or unsupported terminal.
+        #[clap(short = 'd', long = "disable-pretty")]
+        disable_pretty: bool,
+    },
     /// Delete a task
     Del { id: Option<i32> },
     /// Mark a task as done
@@ -61,7 +65,10 @@ pub fn parse_args() {
                 Err(err) => eprintln!("There was an error creating new task: {}", err),
             }
         }
-        Commands::Ls => {
+        Commands::Ls { disable_pretty } => {
+            if *disable_pretty == true {
+                std::env::set_var("DISABLE_TODO_PRETTY", "1");
+            }
             tasks::get_all_tasks().unwrap_or_else(|err| {
                 eprintln!("There was a problem getting tasks: {}", err);
             });

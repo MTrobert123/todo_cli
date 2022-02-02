@@ -1,3 +1,4 @@
+use crate::config;
 use crate::database;
 use chrono::{offset::Local, DateTime, NaiveDateTime};
 use rusqlite::params;
@@ -114,16 +115,21 @@ pub fn get_all_tasks() -> Result<(), Box<dyn Error>> {
     })?;
 
     for (index, task_item) in tasks.enumerate() {
+        let signs = config::Signs::get_signs();
         let task = task_item.unwrap();
         let warn = if is_late(&task.date) == true {
-            "⚠"
+            signs.warning
         } else {
-            ""
+            "".to_string()
         };
-        let sign = if task.done == true { "✓" } else { "⨯" };
+        let sign = if task.done == true {
+            signs.done
+        } else {
+            signs.not_done
+        };
 
         println!(
-            "[{}] {}. {} ({}) {}",
+            "[{}] {}. {} ({}) \t {}",
             sign,
             index + 1,
             task.name,
