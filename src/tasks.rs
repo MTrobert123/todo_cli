@@ -128,14 +128,13 @@ pub fn get_all_tasks() -> Result<(), Box<dyn Error>> {
             signs.not_done
         };
 
-        println!(
-            "[{}] {}. {} ({}) \t {}",
-            sign,
-            index + 1,
-            task.name,
-            task.date,
-            warn
-        );
+        let date = if task.date == "" {
+            "".to_string()
+        } else {
+            format!("({})", task.date)
+        };
+
+        println!("[{}] {}. {} {} {}", sign, index + 1, task.name, date, warn);
     }
     Ok(())
 }
