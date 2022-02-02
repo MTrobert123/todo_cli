@@ -11,21 +11,23 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
+    /// Add new task
     Add {
+        /// Task name for the new task
         name: Option<String>,
         #[clap(short = 'd')]
+        /// Due date for the new task (format: "%Y-%m-%d %H:%M:%S")
         date: Option<String>,
     },
+    /// List all available tasks
     Ls,
-    Del {
-        id: Option<i32>,
-    },
-    Check {
-        id: Option<i32>,
-    },
-    Uncheck {
-        id: Option<i32>,
-    },
+    /// Delete a task
+    Del { id: Option<i32> },
+    /// Mark a task as done
+    Check { id: Option<i32> },
+    /// Mark a task as undone
+    Uncheck { id: Option<i32> },
+    /// Rename a task
     Rename {
         id: Option<i32>,
         name: Option<String>,
