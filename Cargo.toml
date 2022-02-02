@@ -9,7 +9,6 @@ license = "MIT"
 
 [dependencies]
 chrono = "0.4"
-chrono-tz = "0.6.1"
 clap = { version = "3.0.13", features = ["derive"] }
 rusqlite = {version = "0.26.0", features = ["bundled"]}
 dirs = "4.0"

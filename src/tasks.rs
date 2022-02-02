@@ -169,3 +169,39 @@ pub fn rename_task(id: i32, name: String) -> Result<(), Box<dyn Error>> {
     println!("Task with id: {} renamed to: {}", id, name);
     Ok(())
 }
+
+pub fn report_tasks() -> Result<(), Box<dyn Error>> {
+    let conn = database::get_db();
+    let mut stmt = conn.prepare("SELECT task_name,task_date, task_done FROM tasks;")?;
+    let tasks = stmt.query_map([], |row| {
+        Ok(Task {
+            name: row.get(0)?,
+            date: row.get(1)?,
+            done: row.get(2)?,
+        })
+    })?;
+    let task_vec: Vec<Task> = tasks.into_iter().flatten().collect();
+    let done_tasks: Vec<&Task> = task_vec.iter().filter(|task| task.done == true).collect();
+    let late_tasks: Vec<&Task> = task_vec
+        .iter()
+        .filter(|task| is_late(&task.date) && task.done == false)
+        .collect();
+
+    let done_ratio = (done_tasks.len()) as f64 / (task_vec.len()) as f64;
+    let late_ratio = (late_tasks.len()) as f64 / (task_vec.len() - done_tasks.len()) as f64;
+    println!(
+        "Report:
+        - Total tasks: {} 
+        - Tasks done: {}/{} ({:.2} %)
+        - Late Tasks: {}/{} ({:.2} %)
+    ",
+        task_vec.len(),
+        done_tasks.len(),
+        task_vec.len(),
+        done_ratio * 100.0,
+        late_tasks.len(),
+        (task_vec.len() - done_tasks.len()),
+        late_ratio * 100.0
+    );
+    Ok(())
+}

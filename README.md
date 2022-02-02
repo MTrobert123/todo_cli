@@ -30,7 +30,7 @@ Following commands are available:
 - [x] check
 - [x] uncheck
 - [x] rename
-- [ ] report
+- [x] report
 
 ## License
 

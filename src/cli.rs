@@ -36,6 +36,8 @@ enum Commands {
         id: Option<i32>,
         name: Option<String>,
     },
+    /// Generate a report of done and late tasks
+    Report,
 }
 
 fn check_id(id: &Option<i32>) -> i32 {
@@ -107,6 +109,11 @@ pub fn parse_args() {
                     eprintln!("error: no name provided.");
                 }
             }
+        }
+        &Commands::Report => {
+            tasks::report_tasks().unwrap_or_else(|err| {
+                eprintln!("There was an error generating the report: {}", err);
+            });
         }
     }
 }
