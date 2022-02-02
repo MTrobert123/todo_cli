@@ -64,19 +64,16 @@ pub fn parse_args() {
         Commands::Ls => {
             tasks::get_all_tasks().unwrap_or_else(|err| {
                 eprintln!("There was a problem getting tasks: {}", err);
-                exit(1);
             });
         }
         Commands::Del { id } => match id {
             Some(value) => {
                 tasks::delete_task(value).unwrap_or_else(|err| {
                     eprintln!("There was an error deleting task: {}", err);
-                    exit(1);
                 });
             }
             None => {
                 eprintln!("error: please enter the task id.");
-                exit(1);
             }
         },
         Commands::Check { id } => {
@@ -101,7 +98,6 @@ pub fn parse_args() {
                 }
                 None => {
                     eprintln!("error: no name provided.");
-                    exit(1)
                 }
             }
         }
